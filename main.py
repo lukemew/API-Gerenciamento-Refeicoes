@@ -1,5 +1,5 @@
 from typing import List
-from fastapi import FastAPI, Form, HTTPException
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import datetime
 
@@ -8,13 +8,19 @@ app = FastAPI()
 users = []
 meals = []
 
+class User(BaseModel):
+    name: str
+    age: int
+    gender: str
+
 class Meal(BaseModel):
     user_id: int
-    meal_type: str  
+    meal_type: str
     food_items: List[str]
     calories: int
     date: datetime.date
 
+# Função para buscar um usuário pelo ID
 def get_user_by_id(user_id: int):
     for user in users:
         if user["id"] == user_id:
@@ -23,7 +29,7 @@ def get_user_by_id(user_id: int):
 
 @app.get("/")
 async def root():
-    return {"message": "Bem vindo à aplicação FastAPI!!"}
+    return {"message": "Bem-vindo à aplicação FastAPI!!"}
 
 @app.get("/users")
 async def list_users():
@@ -34,12 +40,12 @@ async def list_users():
     }
 
 @app.post("/users")
-async def create_user(name: str = Form(...), age: int = Form(...), gender: str = Form(...)):
+async def create_user(user: User):
     new_user = {
         "id": len(users) + 1,
-        "name": name,
-        "age": age,
-        "gender": gender
+        "name": user.name,
+        "age": user.age,
+        "gender": user.gender
     }
     users.append(new_user)
     return {
@@ -81,13 +87,17 @@ async def get_meals_by_user(user_id: int):
 async def update_meal(meal_id: int, meal: Meal):
     for m in meals:
         if m["id"] == meal_id:
-            m.update(meal.dict())
+            m["meal_type"] = meal.meal_type
+            m["food_items"] = meal.food_items
+            m["calories"] = meal.calories
+            m["date"] = meal.date
             return {
                 "status": "success",
                 "message": "Meal updated successfully.",
                 "data": m
             }
     raise HTTPException(status_code=404, detail="Meal not found.")
+
 
 @app.delete("/meals/{meal_id}")
 async def delete_meal(meal_id: int):
