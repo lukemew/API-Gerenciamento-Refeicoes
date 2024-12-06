@@ -1,4 +1,4 @@
-# FastAPI Application
+# API de Gerenciamento de Usuários e Refeições
 
 Esta é uma aplicação FastAPI para gerenciar usuários e suas refeições.
 
