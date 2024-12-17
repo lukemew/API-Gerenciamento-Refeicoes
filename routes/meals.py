@@ -10,7 +10,7 @@ from sqlalchemy.exc import SQLAlchemyError
 router = APIRouter()
 
 
-# Modelo para criação de refeições (POST)
+
 class MealCreate(BaseModel):
     user_id: int
     meal_type: str
@@ -19,7 +19,7 @@ class MealCreate(BaseModel):
     date: datetime.date
 
 
-# Modelo para atualização de refeições (PUT)
+
 class MealUpdate(BaseModel):
     meal_type: Optional[str] = None
     food_items: Optional[List[str]] = None
@@ -27,11 +27,11 @@ class MealUpdate(BaseModel):
     date: Optional[datetime.date] = None
 
 
-# Endpoint POST: Cria uma nova refeição
+
 @router.post("/", summary="Cria uma nova refeição")
 def add_meal(meal_data: MealCreate, db: Session = Depends(get_db)):
     try:
-        # Convertendo lista de strings para uma string única (serialização)
+
         food_items_str = ",".join(meal_data.food_items)
 
         new_meal = Meal(
@@ -56,7 +56,7 @@ def add_meal(meal_data: MealCreate, db: Session = Depends(get_db)):
         raise HTTPException(status_code=400, detail="Invalid input data")
 
 
-# Endpoint GET: Lista refeições de um usuário
+
 @router.get("/{user_id}", summary="Lista refeições de um usuário")
 def get_meals_by_user(user_id: int, db: Session = Depends(get_db)):
     meals = db.query(Meal).filter(Meal.user_id == user_id).all()
@@ -65,7 +65,7 @@ def get_meals_by_user(user_id: int, db: Session = Depends(get_db)):
     return {"message": "Meals retrieved successfully", "data": meals}
 
 
-# Endpoint PUT: Atualiza uma refeição pelo ID
+
 @router.put("/{meal_id}", summary="Atualiza uma refeição pelo ID")
 def update_meal(meal_id: int, meal_data: MealUpdate, db: Session = Depends(get_db)):
     meal = db.query(Meal).filter(Meal.id == meal_id).first()
@@ -73,10 +73,10 @@ def update_meal(meal_id: int, meal_data: MealUpdate, db: Session = Depends(get_d
         raise HTTPException(status_code=404, detail="Meal not found")
 
     try:
-        # Atualizando os campos com os dados fornecidos
+        
         for key, value in meal_data.dict(exclude_unset=True).items():
             if key == "food_items" and value is not None:
-                value = ",".join(value)  # Serializa a lista de strings
+                value = ",".join(value)  
             setattr(meal, key, value)
 
         db.commit()
@@ -89,7 +89,6 @@ def update_meal(meal_id: int, meal_data: MealUpdate, db: Session = Depends(get_d
         raise HTTPException(status_code=500, detail="Failed to update meal")
 
 
-# Endpoint DELETE: Remove uma refeição pelo ID
 @router.delete("/{meal_id}", summary="Remove uma refeição pelo ID")
 def delete_meal(meal_id: int, db: Session = Depends(get_db)):
     meal = db.query(Meal).filter(Meal.id == meal_id).first()
