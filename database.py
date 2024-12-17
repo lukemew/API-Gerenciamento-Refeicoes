@@ -1,17 +1,23 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base, sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-SQLALCHEMY_DATABASE_URL = "sqlite:///./diet_manager.db"
+# URL do banco de dados SQLite
+DATABASE_URL = "sqlite:///./test.db"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
+# Configuração do SQLAlchemy Engine
+engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
+
+# Configuração da sessão local
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Base declarativa para os modelos
 Base = declarative_base()
 
-
+# Dependência para obter a sessão do banco de dados
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
         db.close()
-
