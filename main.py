@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routes.users import router as users_router
-from routes.meals import router as meals_router
+from routes import users, meals, reports  # Importe as rotas
 
 app = FastAPI()
 
@@ -14,9 +13,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Inclusão das rotas
-app.include_router(users_router, prefix="/users", tags=["Users"])
-app.include_router(meals_router, prefix="/meals", tags=["Meals"])
+app.include_router(users.router, prefix="/api/users", tags=["Users"])
+app.include_router(meals.router, prefix="/api/meals", tags=["Meals"])
+app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
 
 @app.get("/")
 def root():

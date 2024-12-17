@@ -12,7 +12,7 @@ class UserUpdate(BaseModel):
     age: Optional[int] = None
     gender: Optional[str] = None
 
-@router.post("/users", summary="Cria um novo usuário")
+@router.post("/", summary="Cria um novo usuário")
 def create_user(name: str, age: int, gender: str, db: Session = Depends(get_db)):
     new_user = User(name=name, age=age, gender=gender)
     db.add(new_user)
@@ -21,13 +21,13 @@ def create_user(name: str, age: int, gender: str, db: Session = Depends(get_db))
     return {"message": "User created successfully", "data": new_user}
 
 
-@router.get("/users", summary="Lista todos os usuários")
+@router.get("/", summary="Lista todos os usuários")
 def list_users(db: Session = Depends(get_db)):
     users = db.query(User).all()
     return {"message": "Users retrieved successfully", "data": users}
 
 
-@router.put("/users/{user_id}", summary="Atualiza um usuário pelo ID")
+@router.put("/{user_id}", summary="Atualiza um usuário pelo ID")
 def update_user(user_id: int, user_data: UserUpdate, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
@@ -40,7 +40,7 @@ def update_user(user_id: int, user_data: UserUpdate, db: Session = Depends(get_d
     return {"message": "User updated successfully", "data": user}
 
 
-@router.delete("/users/{user_id}", summary="Remove um usuário pelo ID")
+@router.delete("/{user_id}", summary="Remove um usuário pelo ID")
 def delete_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
