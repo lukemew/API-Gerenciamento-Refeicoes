@@ -1,112 +1,23 @@
-from typing import List
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-import datetime
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from routes.users import router as users_router
+from routes.meals import router as meals_router
 
 app = FastAPI()
 
-users = []
-meals = []
+# Configuração de CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
-class User(BaseModel):
-    name: str
-    age: int
-    gender: str
-
-class Meal(BaseModel):
-    user_id: int
-    meal_type: str
-    food_items: List[str]
-    calories: int
-    date: datetime.date
-
-# Função para buscar um usuário pelo ID
-def get_user_by_id(user_id: int):
-    for user in users:
-        if user["id"] == user_id:
-            return user
-    return None
+# Inclusão das rotas
+app.include_router(users_router, prefix="/users", tags=["Users"])
+app.include_router(meals_router, prefix="/meals", tags=["Meals"])
 
 @app.get("/")
-async def root():
-    return {"message": "Bem-vindo à aplicação FastAPI!!"}
-
-@app.get("/users")
-async def list_users():
-    return {
-        "status": "success",
-        "message": "Users retrieved successfully.",
-        "data": users
-    }
-
-@app.post("/users")
-async def create_user(user: User):
-    new_user = {
-        "id": len(users) + 1,
-        "name": user.name,
-        "age": user.age,
-        "gender": user.gender
-    }
-    users.append(new_user)
-    return {
-        "status": "success",
-        "message": "User registered successfully.",
-        "data": new_user
-    }
-
-@app.post("/meals")
-async def add_meal(meal: Meal):
-
-    user = get_user_by_id(meal.user_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="User not found.")
-    
-    meal_record = meal.dict()
-    meal_record["id"] = len(meals) + 1
-    meals.append(meal_record)
-    
-    return {
-        "status": "success",
-        "message": "Meal added successfully.",
-        "data": meal_record
-    }
-
-@app.get("/meals/{user_id}")
-async def get_meals_by_user(user_id: int):
-    user_meals = [meal for meal in meals if meal["user_id"] == user_id]
-    if not user_meals:
-        raise HTTPException(status_code=404, detail="No meals found for this user.")
-    
-    return {
-        "status": "success",
-        "message": "Meals retrieved successfully.",
-        "data": user_meals
-    }
-
-@app.put("/meals/{meal_id}")
-async def update_meal(meal_id: int, meal: Meal):
-    for m in meals:
-        if m["id"] == meal_id:
-            m["meal_type"] = meal.meal_type
-            m["food_items"] = meal.food_items
-            m["calories"] = meal.calories
-            m["date"] = meal.date
-            return {
-                "status": "success",
-                "message": "Meal updated successfully.",
-                "data": m
-            }
-    raise HTTPException(status_code=404, detail="Meal not found.")
-
-
-@app.delete("/meals/{meal_id}")
-async def delete_meal(meal_id: int):
-    for m in meals:
-        if m["id"] == meal_id:
-            meals.remove(m)
-            return {
-                "status": "success",
-                "message": "Meal deleted successfully.",
-                "data": m
-            }
-    raise HTTPException(status_code=404, detail="Meal not found.")
+def root():
+    return {"message": "API de Gerenciamento de Dieta com Banco de Dados SQLite"}
