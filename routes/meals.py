@@ -26,8 +26,6 @@ class MealUpdate(BaseModel):
     calories: Optional[int] = None
     date: Optional[datetime.date] = None
 
-
-
 @router.post("/", summary="Cria uma nova refeição")
 def add_meal(meal_data: MealCreate, db: Session = Depends(get_db)):
     try:

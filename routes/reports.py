@@ -7,7 +7,6 @@ from sqlalchemy.sql import func
 
 router = APIRouter()
 
-
 @router.get("/user/{user_id}/calories", summary="Resumo de calorias por usuário")
 def get_user_calories(user_id: int, db: Session = Depends(get_db)):
     try:

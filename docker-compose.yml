@@ -1,9 +1,8 @@
-version: "3.8"
-
 services:
   db:
     image: postgres:14
     container_name: postgres_db
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password
@@ -17,6 +16,7 @@ services:
     build:
       context: .
     container_name: fastapi_app
+    restart: always
     ports:
       - "8000:8000"
     depends_on:
