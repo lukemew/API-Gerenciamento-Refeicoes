@@ -6,9 +6,9 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, nullable=False)
-    age = Column(Integer, nullable=False)  # Confirme que esta linha existe
-    gender = Column(String, nullable=False)
+    name = Column(String(255), nullable=False)  # Define tamanho máximo
+    age = Column(Integer, nullable=False)
+    gender = Column(String(50), nullable=False)  # Define tamanho máximo
     meals = relationship("Meal", back_populates="user", cascade="all, delete-orphan")
 
 class Meal(Base):
@@ -16,14 +16,13 @@ class Meal(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
-    meal_type = Column(String, nullable=False)
-    food_items = Column(String, nullable=False)  # Lista armazenada como string separada por vírgula
+    meal_type = Column(String(50), nullable=False)  # Define tamanho máximo
+    food_items = Column(String(255), nullable=False)
     calories = Column(Integer, nullable=False)
     date = Column(Date, nullable=False)
 
     # Relacionamento com User
     user = relationship("User", back_populates="meals")
 
-
-
+# Criar tabelas no banco de dados
 Base.metadata.create_all(bind=engine)
