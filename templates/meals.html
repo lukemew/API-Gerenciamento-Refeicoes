@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciar Refeições</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/styles.css') }}"
+    />
+    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/index.css" />
+    <link rel="stylesheet" href="../static/css/meals.css" />
+  </head>
+  <body>
+    <div class="glass-container">
+      <h1>Gerenciar Refeições 🍽️</h1>
+
+      <!-- Formulário para adicionar uma nova refeição -->
+      <form id="add-meal-form">
+        <input
+          type="number"
+          id="user-id"
+          placeholder="ID do Usuário"
+          required
+        />
+        <input
+          type="text"
+          id="meal-type"
+          placeholder="Tipo de Refeição"
+          required
+        />
+        <input
+          type="text"
+          id="food-items"
+          placeholder="Itens da Refeição (separados por vírgula)"
+          required
+        />
+        <input type="number" id="calories" placeholder="Calorias" required />
+        <input type="date" id="date" required />
+        <button type="submit">Adicionar Refeição</button>
+      </form>
+
+      <!-- Lista de refeições -->
+      <div id="meal-list">
+        <h2>Lista de Refeições</h2>
+
+        <ul id="meals"></ul>
+      </div>
+
+      <!-- Botão para voltar à página inicial -->
+      <a href="/" class="button">Voltar à Página Inicial</a>
+    </div>
+
+    <!-- Script JavaScript -->
+    <script src="{{ url_for('static', path='js/meals.js') }}"></script>
+  </body>
+</html>

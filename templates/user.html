@@ -1,50 +1,39 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% if user %}Editar{% else %}Adicionar{% endif %} Usuário</title>
+    <title>Gerenciar Usuários</title>
     <link
       rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      href="{{ url_for('static', path='css/styles.css') }}"
     />
+    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/user.css" />
   </head>
   <body>
-    <div class="container mt-5">
-      <h2>{% if user %}Editar{% else %}Adicionar{% endif %} Usuário</h2>
-      <form method="post">
-        <input
-          type="hidden"
-          name="user_id"
-          value="{{ user.id if user else '' }}"
-        />
-        <div class="mb-3">
-          <label for="name" class="form-label">Nome:</label>
-          <input
-            type="text"
-            class="form-control"
-            id="name"
-            name="name"
-            value="{{ user.name if user else '' }}"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label for="age" class="form-label">Idade:</label>
-          <input
-            type="number"
-            class="form-control"
-            id="age"
-            name="age"
-            value="{{ user.age if user else '' }}"
-            required
-          />
-        </div>
-        <button type="submit" class="btn btn-success">
-          {% if user %}Atualizar{% else %}Salvar{% endif %}
-        </button>
-        <a href="/" class="btn btn-secondary">Cancelar</a>
+    <div class="glass-container">
+      <h1>Gerenciar Usuários 👤</h1>
+
+      <!-- Formulário para adicionar um novo usuário -->
+      <form id="add-user-form">
+        <input type="text" id="name" placeholder="Nome" required />
+        <input type="number" id="age" placeholder="Idade" required />
+        <input type="text" id="gender" placeholder="Gênero" required />
+        <button type="submit">Adicionar Usuário</button>
       </form>
+
+      <!-- Lista de usuários -->
+      <div id="user-list">
+        <h2>Lista de Usuários</h2>
+        <ul id="users"></ul>
+      </div>
+
+      <!-- Botão para voltar à página inicial -->
+      <a href="/" class="button">Voltar à Página Inicial</a>
     </div>
+
+    <!-- Script JavaScript -->
+    <script src="{{ url_for('static', path='js/users.js') }}"></script>
   </body>
 </html>
