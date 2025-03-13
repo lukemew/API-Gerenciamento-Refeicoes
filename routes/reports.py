@@ -12,7 +12,7 @@ def get_user_calories(user_id: int, db: Session = Depends(get_db)):
     try:
         user = db.query(User).filter(User.id == user_id).first()
         if not user:
-            raise HTTPException(status_code=404, detail="User not found")
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
         meals = db.query(Meal).filter(Meal.user_id == user_id).all()
         total_calories = sum(meal.calories for meal in meals)
@@ -21,7 +21,7 @@ def get_user_calories(user_id: int, db: Session = Depends(get_db)):
             "user_id": user_id,
             "name": user.name,
             "total_calories": total_calories,
-            "message": f"{user.name} consumed a total of {total_calories} calories."
+            "message": f"{user.name} consumiu um total de {total_calories} calorias."
         }
     except SQLAlchemyError as e:
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Erro no banco de dados: {str(e)}")

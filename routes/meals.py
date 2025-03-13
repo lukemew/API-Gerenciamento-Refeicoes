@@ -9,8 +9,6 @@ from sqlalchemy.exc import SQLAlchemyError
 
 router = APIRouter()
 
-
-
 class MealCreate(BaseModel):
     user_id: int
     meal_type: str
@@ -25,6 +23,15 @@ class MealUpdate(BaseModel):
     food_items: Optional[List[str]] = None
     calories: Optional[int] = None
     date: Optional[datetime.date] = None
+
+@router.get("/", summary="Lista todas as refeições")
+def get_all_meals(db: Session = Depends(get_db)):
+    try:
+        meals = db.query(Meal).all()
+        return {"message": "Meals retrieved successfully", "data": meals}
+    except SQLAlchemyError as e:
+        print(f"Database Error: {e}")
+        raise HTTPException(status_code=500, detail="An error occurred while processing the database.")
 
 @router.post("/", summary="Cria uma nova refeição")
 def add_meal(meal_data: MealCreate, db: Session = Depends(get_db)):
@@ -61,6 +68,7 @@ def get_meals_by_user(user_id: int, db: Session = Depends(get_db)):
     if not meals:
         raise HTTPException(status_code=404, detail="No meals found for this user")
     return {"message": "Meals retrieved successfully", "data": meals}
+
 
 
 

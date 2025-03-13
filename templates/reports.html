@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ver Relatórios</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/reports.css') }}"
+    />
+    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/index.css" />
+    <link rel="stylesheet" href="../static/css/reports.css" />
+  </head>
+  <body>
+    <div class="glass-container">
+      <h1>Ver Relatórios 📊</h1>
+
+      <!-- Formulário para buscar relatório por usuário -->
+      <form id="report-form">
+        <input
+          type="number"
+          id="user-id"
+          placeholder="ID do Usuário"
+          required
+        />
+        <button type="submit">Buscar Relatório</button>
+      </form>
+
+      <!-- Resultado do relatório -->
+      <div id="report-result">
+        <h2>Relatório de Calorias</h2>
+        <p id="report-message"></p>
+        <ul id="report-details"></ul>
+      </div>
+
+      <!-- Botão para voltar à página inicial -->
+      <a href="/" class="button">Voltar à Página Inicial</a>
+    </div>
+
+    <!-- Script JavaScript -->
+    <script src="{{ url_for('static', path='js/reports.js') }}"></script>
+  </body>
+</html>
