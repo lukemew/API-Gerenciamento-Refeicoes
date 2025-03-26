@@ -16,6 +16,7 @@ services:
       - mysql_data:/var/lib/mysql
 
   app:
+    entrypoint: ["/wait-for-db.sh", "mysql_db"]
     build: .
     container_name: fastapi_app
     restart: always

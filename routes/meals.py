@@ -24,14 +24,30 @@ class MealUpdate(BaseModel):
     calories: Optional[int] = None
     date: Optional[datetime.date] = None
 
-@router.get("/", summary="Lista todas as refeições")
-def get_all_meals(db: Session = Depends(get_db)):
+from fastapi import Query  # Importe Query para tratar parâmetros opcionais
+
+@router.get("/", summary="Lista refeições (todas ou filtradas por usuário)")
+def get_all_meals(
+    user_id: Optional[int] = Query(None),
+    db: Session = Depends(get_db)
+):
+    print(f"🔍 user_id recebido: {user_id}")  # Verifica se o user_id está chegando
+
     try:
-        meals = db.query(Meal).all()
+        if user_id is not None:
+            meals = db.query(Meal).filter(Meal.user_id == user_id).all()
+            print(f"🍽 Refeições filtradas: {meals}")  # Verifica o que está sendo retornado
+        else:
+            meals = db.query(Meal).all()
+            print(f"📋 Todas as refeições: {meals}")  # Verifica se há refeições no banco
+
         return {"message": "Meals retrieved successfully", "data": meals}
+
     except SQLAlchemyError as e:
-        print(f"Database Error: {e}")
-        raise HTTPException(status_code=500, detail="An error occurred while processing the database.")
+        print(f"❌ Database Error: {e}")
+        raise HTTPException(status_code=500, detail="Erro ao acessar o banco de dados.")
+
+
 
 @router.post("/", summary="Cria uma nova refeição")
 def add_meal(meal_data: MealCreate, db: Session = Depends(get_db)):

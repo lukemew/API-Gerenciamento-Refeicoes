@@ -16,6 +16,17 @@
     <div class="glass-container">
       <h1>Gerenciar Refeições 🍽️</h1>
 
+      <!-- Seleção de usuário -->
+      <label for="user-select" style="color: white; font-weight: bold"
+        >Selecione um usuário:</label
+      >
+      <select id="user-select">
+        <option value="">Selecione um usuário</option>
+        {% for user in users %}
+        <option value="{{ user.id }}">Usuário ID: {{ user.id }}</option>
+        {% endfor %}
+      </select>
+
       <!-- Formulário para adicionar uma nova refeição -->
       <form id="add-meal-form">
         <input
@@ -44,7 +55,6 @@
       <!-- Lista de refeições -->
       <div id="meal-list">
         <h2>Lista de Refeições</h2>
-
         <ul id="meals"></ul>
       </div>
 

@@ -26,7 +26,23 @@
       <!-- Lista de usuários -->
       <div id="user-list">
         <h2>Lista de Usuários</h2>
-        <ul id="users"></ul>
+        <ul id="users">
+          {% for user in users %}
+          <li>
+            {{ user.name }} - {{ user.age }} anos - {{ user.gender }}
+            <button
+              class="edit-user"
+              data-id="{{ user.id }}"
+              data-name="{{ user.name }}"
+              data-age="{{ user.age }}"
+              data-gender="{{ user.gender }}"
+            >
+              Editar
+            </button>
+            <button class="delete-user" data-id="{{ user.id }}">Remover</button>
+          </li>
+          {% endfor %}
+        </ul>
       </div>
 
       <!-- Botão para voltar à página inicial -->

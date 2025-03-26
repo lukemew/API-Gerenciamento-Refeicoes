@@ -1,21 +1,66 @@
-// Função para carregar a lista de usuários
+document.addEventListener("DOMContentLoaded", () => {
+  loadUsers();
+});
+
+document
+  .getElementById("add-user-form")
+  .addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const name = document.getElementById("name").value;
+    const age = document.getElementById("age").value;
+    const gender = document.getElementById("gender").value;
+
+    const response = await fetch("/api/users/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, age, gender }),
+    });
+
+    if (response.ok) {
+      loadUsers();
+      document.getElementById("add-user-form").reset();
+    } else {
+      alert("Erro ao adicionar usuário.");
+    }
+  });
+
 async function loadUsers() {
   try {
-    const response = await fetch("/api/users");
-    if (!response.ok) {
-      throw new Error(`Erro na requisição: ${response.status}`);
-    }
-    const data = await response.json();
-    console.log("Dados recebidos:", data); // Depuração
+    const response = await fetch("/api/users/");
+    if (!response.ok) throw new Error(`Erro na requisição: ${response.status}`);
+
+    const { data: users } = await response.json();
     const userList = document.getElementById("users");
+    userList.innerHTML = ""; // Limpa a lista antes de adicionar os novos elementos
 
-    // Limpa a lista atual
-    userList.innerHTML = "";
-
-    // Adiciona cada usuário à lista
-    data.data.forEach((user) => {
+    users.forEach((user) => {
       const li = document.createElement("li");
-      li.textContent = `ID: ${user.id}, Nome: ${user.name}, Idade: ${user.age}, Gênero: ${user.gender}`;
+      li.innerHTML = `ID: ${user.id}, Nome: ${user.name}, Idade: ${user.age}, Gênero: ${user.gender} `;
+
+      // Criando Botão de Editar
+      const editButton = document.createElement("button");
+      editButton.textContent = "Editar";
+      editButton.classList.add("edit-user");
+      editButton.dataset.id = user.id;
+      editButton.dataset.name = user.name;
+      editButton.dataset.age = user.age;
+      editButton.dataset.gender = user.gender;
+      editButton.addEventListener("click", function () {
+        editUser(user.id, user.name, user.age, user.gender);
+      });
+
+      // Criando Botão de Remover
+      const deleteButton = document.createElement("button");
+      deleteButton.textContent = "Remover";
+      deleteButton.classList.add("delete-user");
+      deleteButton.dataset.id = user.id;
+      deleteButton.addEventListener("click", function () {
+        deleteUser(user.id);
+      });
+
+      li.appendChild(editButton);
+      li.appendChild(deleteButton);
       userList.appendChild(li);
     });
   } catch (error) {
@@ -23,36 +68,47 @@ async function loadUsers() {
   }
 }
 
-// Função para adicionar um novo usuário
-async function addUser(event) {
-  event.preventDefault();
+async function editUser(userId, currentName, currentAge, currentGender) {
+  const newName = prompt("Novo nome:", currentName);
+  const newAge = prompt("Nova idade:", currentAge);
+  const newGender = prompt("Novo gênero:", currentGender);
 
-  const name = document.getElementById("name").value;
-  const age = document.getElementById("age").value;
-  const gender = document.getElementById("gender").value;
+  if (!newName && !newAge && !newGender) {
+    alert("Nenhum campo foi modificado!");
+    return;
+  }
 
-  const response = await fetch("/add-user", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: `name=${encodeURIComponent(name)}&age=${encodeURIComponent(
-      age
-    )}&gender=${encodeURIComponent(gender)}`,
-  });
+  const updatedData = {};
+  if (newName) updatedData.name = newName;
+  if (newAge) updatedData.age = parseInt(newAge);
+  if (newGender) updatedData.gender = newGender;
 
-  if (response.ok) {
-    // Recarrega a lista de usuários após adicionar um novo
-    loadUsers();
-    // Limpa o formulário
-    document.getElementById("add-user-form").reset();
-  } else {
-    alert("Erro ao adicionar usuário");
+  try {
+    const response = await fetch(`/api/users/${userId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedData),
+    });
+
+    if (response.ok) {
+      loadUsers();
+    } else {
+      alert("Erro ao editar usuário.");
+    }
+  } catch (error) {
+    console.error("Erro ao editar usuário:", error);
   }
 }
 
-// Carrega a lista de usuários ao carregar a página
-document.addEventListener("DOMContentLoaded", loadUsers);
-
-// Adiciona um listener para o formulário de adicionar usuário
-document.getElementById("add-user-form").addEventListener("submit", addUser);
+async function deleteUser(userId) {
+  try {
+    const response = await fetch(`/api/users/${userId}`, { method: "DELETE" });
+    if (response.ok) {
+      loadUsers();
+    } else {
+      alert("Erro ao remover usuário.");
+    }
+  } catch (error) {
+    console.error("Erro ao remover usuário:", error);
+  }
+}
