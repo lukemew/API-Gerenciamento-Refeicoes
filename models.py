@@ -1,5 +1,6 @@
-from sqlalchemy import Column, Integer, String, Date, ForeignKey
+from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
 from sqlalchemy.orm import relationship
+from datetime import datetime
 from database import Base, engine
 
 class User(Base):
@@ -23,6 +24,19 @@ class Meal(Base):
 
     # Relacionamento com User
     user = relationship("User", back_populates="meals")
+
+class ActivityLog(Base):
+    __tablename__ = "activity_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    activity = Column(String(50), nullable=False)
+    intensity = Column(String(50))
+    duration = Column(Integer)  
+    calories_burned = Column(Float)  
+    date = Column(Date, nullable=False, default=datetime.now().date())
+
+    user = relationship("User")
 
 # Criar tabelas no banco de dados
 Base.metadata.create_all(bind=engine)

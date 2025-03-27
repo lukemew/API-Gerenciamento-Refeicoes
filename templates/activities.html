@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gerenciar Atividades Físicas</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/styles.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/index.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', path='css/activities.css') }}"
+    />
+    <link rel="stylesheet" href="../static/css/styles.css" />
+    <link rel="stylesheet" href="../static/css/activities.css" />
+  </head>
+  <body>
+    <div class="glass-container">
+      <h1>Gerenciar Atividades Físicas 🏋️‍♂️</h1>
+
+      <!-- Seleção de usuário -->
+      <label for="user-select" style="color: white; font-weight: bold"
+        >Selecione um usuário:</label
+      >
+      <select id="user-select">
+        <option value="">Selecione um usuário</option>
+        {% for user in users %}
+        <option value="{{ user.id }}">
+          Usuário ID: {{ user.id }} - {{ user.name }}
+        </option>
+        {% endfor %}
+      </select>
+
+      <!-- Formulário para adicionar uma nova atividade -->
+      <form id="add-activity-form">
+        <input
+          type="number"
+          id="user-id"
+          placeholder="ID do Usuário"
+          required
+        />
+        <select id="activity" required>
+          <option value="">Selecione a atividade</option>
+          <option value="Bike">Bike</option>
+          <option value="Caminhada">Caminhada</option>
+          <option value="Corrida">Corrida</option>
+          <option value="Natação">Natação</option>
+          <option value="Musculação">Musculação</option>
+        </select>
+        <select id="intensity" required>
+          <option value="">Selecione a intensidade</option>
+          <option value="baixa">Baixa</option>
+          <option value="média">Média</option>
+          <option value="alta">Alta</option>
+        </select>
+        <input
+          type="number"
+          id="duration"
+          placeholder="Duração (minutos)"
+          required
+        />
+        <button type="submit">Adicionar Atividade</button>
+      </form>
+
+      <!-- Lista de atividades -->
+      <div id="activity-list">
+        <h2>Lista de Atividades</h2>
+        <ul id="activities"></ul>
+      </div>
+
+      <!-- Botão para voltar à página inicial -->
+      <a href="/" class="button">Voltar à Página Inicial</a>
+    </div>
+
+    <!-- Script JavaScript -->
+    <script src="../static/js/activities.js"></script>
+  </body>
+</html>

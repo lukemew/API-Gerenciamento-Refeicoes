@@ -4,10 +4,12 @@ from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 from database import get_db
 from models import User, Meal
+from fastapi.templating import Jinja2Templates
+
+templates = Jinja2Templates(directory="templates")
 
 router = APIRouter()
 
-templates = Jinja2Templates(directory="templates")
 
 @router.get("/", summary="Página inicial")
 def get_index(request: Request):
@@ -18,7 +20,9 @@ def list_users_page(request: Request, db: Session = Depends(get_db)):
     users = db.query(User).all()
     return templates.TemplateResponse("user.html", {"request": request, "users": users})
 
-
+@router.get("/activities", summary="Página de atividades")
+def activities_page(request: Request):
+    return templates.TemplateResponse("activities.html", {"request": request})
 
 @router.get("/meals", summary="Página de gerenciamento de refeições")
 def list_meals_page(request: Request, db: Session = Depends(get_db)):
@@ -62,7 +66,6 @@ from models import Meal  # Certifique-se de importar o modelo Meal
 @router.get("/reports", summary="Página de relatórios")
 def reports_page(request: Request):
     return templates.TemplateResponse("reports.html", {"request": request})
-
 
 
 @router.post("/add-meal", summary="Adiciona uma nova refeição")

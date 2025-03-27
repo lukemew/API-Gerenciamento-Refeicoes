@@ -16,8 +16,6 @@ class MealCreate(BaseModel):
     calories: int
     date: datetime.date
 
-
-
 class MealUpdate(BaseModel):
     meal_type: Optional[str] = None
     food_items: Optional[List[str]] = None
