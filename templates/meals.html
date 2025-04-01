@@ -20,21 +20,18 @@
       <label for="user-select" style="color: white; font-weight: bold"
         >Selecione um usuário:</label
       >
-      <select id="user-select">
+      <select id="user-select" required>
         <option value="">Selecione um usuário</option>
         {% for user in users %}
-        <option value="{{ user.id }}">Usuário ID: {{ user.id }}</option>
+        <option value="{{ user.id }}">
+          Usuário ID: {{ user.id }} - {{ user.name }}
+        </option>
         {% endfor %}
       </select>
 
       <!-- Formulário para adicionar uma nova refeição -->
       <form id="add-meal-form">
-        <input
-          type="number"
-          id="user-id"
-          placeholder="ID do Usuário"
-          required
-        />
+        <input type="hidden" id="selected-user-id" name="user_id" />
         <input
           type="text"
           id="meal-type"

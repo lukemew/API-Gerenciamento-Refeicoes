@@ -1,9 +1,9 @@
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
-from models import Meal
+from models import Meal, User
 from database import get_db
 from pydantic import BaseModel
-from typing import List, Optional
+from typing import List
 import datetime
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -22,58 +22,46 @@ class MealUpdate(BaseModel):
     calories: Optional[int] = None
     date: Optional[datetime.date] = None
 
-from fastapi import Query  # Importe Query para tratar parâmetros opcionais
-
-@router.get("/", summary="Lista refeições (todas ou filtradas por usuário)")
-def get_all_meals(
-    user_id: Optional[int] = Query(None),
+@router.get("/", summary="Lista refeições por usuário")
+def get_meals(
+    user_id: int = Query(..., description="ID do usuário para filtrar refeições"),
     db: Session = Depends(get_db)
 ):
-    print(f"🔍 user_id recebido: {user_id}")  # Verifica se o user_id está chegando
-
     try:
-        if user_id is not None:
-            meals = db.query(Meal).filter(Meal.user_id == user_id).all()
-            print(f"🍽 Refeições filtradas: {meals}")  # Verifica o que está sendo retornado
-        else:
-            meals = db.query(Meal).all()
-            print(f"📋 Todas as refeições: {meals}")  # Verifica se há refeições no banco
-
-        return {"message": "Meals retrieved successfully", "data": meals}
-
+        # Verifica se o usuário existe
+        if not db.query(User).filter(User.id == user_id).first():
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+        
+        # Filtra estritamente por user_id
+        meals = db.query(Meal).filter(Meal.user_id == user_id).all()
+        print(f"🔍 Refêições para user {user_id}: {[m.id for m in meals]}")  # Log de debug
+        
+        return meals
+        
     except SQLAlchemyError as e:
-        print(f"❌ Database Error: {e}")
-        raise HTTPException(status_code=500, detail="Erro ao acessar o banco de dados.")
-
-
+        raise HTTPException(status_code=500, detail=f"Erro no banco de dados: {str(e)}")
 
 @router.post("/", summary="Cria uma nova refeição")
-def add_meal(meal_data: MealCreate, db: Session = Depends(get_db)):
+def create_meal(meal_data: MealCreate, db: Session = Depends(get_db)):
     try:
-
-        food_items_str = ",".join(meal_data.food_items)
-
+        # Verifica se o usuário existe
+        if not db.query(User).filter(User.id == meal_data.user_id).first():
+            raise HTTPException(status_code=404, detail="Usuário não encontrado")
+        
         new_meal = Meal(
             user_id=meal_data.user_id,
             meal_type=meal_data.meal_type,
-            food_items=food_items_str,
+            food_items=",".join(meal_data.food_items),
             calories=meal_data.calories,
             date=meal_data.date
         )
         db.add(new_meal)
         db.commit()
-        db.refresh(new_meal)
-        return {"message": "Meal added successfully", "data": new_meal}
-    
+        return new_meal
+        
     except SQLAlchemyError as e:
         db.rollback()
-        print(f"Database Error: {e}")
-        raise HTTPException(status_code=500, detail="An error occurred while processing the database.")
-    
-    except Exception as e:
-        print(f"Unexpected Error: {e}")
-        raise HTTPException(status_code=400, detail="Invalid input data")
-
+        raise HTTPException(status_code=500, detail=f"Erro no banco de dados: {str(e)}")
 
 
 @router.get("/{user_id}", summary="Lista refeições de um usuário")
