@@ -36,3 +36,5 @@ app.include_router(meals.router, prefix="/api/meals", tags=["Meals"])
 app.include_router(reports.router, prefix="/api/reports", tags=["Reports"])
 app.include_router(activities.router, prefix="", tags=["Views"])  # Para a página HTML
 
+
+
