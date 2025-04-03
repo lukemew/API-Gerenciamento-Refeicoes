@@ -73,41 +73,59 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  async function editMeal(mealId, userId) {
-    try {
-      const response = await fetch(`${API_BASE_URL}/${mealId}`);
-      if (!response.ok) throw new Error((await response.json()).detail);
-      const meal = await response.json();
+  function editMeal(mealId) {
+    console.log("mealId recebido:", mealId); // Verificar se mealId está correto
 
-      const mealType =
-        prompt("Tipo de refeição:", meal.meal_type) || meal.meal_type;
-      const foodItems =
-        prompt("Itens (separados por vírgula):", meal.food_items) ||
-        meal.food_items;
-      const calories =
-        parseInt(prompt("Calorias:", meal.calories)) || meal.calories;
-      const date = prompt("Data (YYYY-MM-DD):", meal.date) || meal.date;
-
-      const updateResponse = await fetch(`${API_BASE_URL}/${mealId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          meal_type: mealType,
-          food_items: foodItems.split(",").map((i) => i.trim()),
-          calories,
-          date,
-        }),
-      });
-
-      if (!updateResponse.ok)
-        throw new Error((await updateResponse.json()).detail);
-
-      await loadMeals(userId);
-      alert("Refeição atualizada com sucesso!");
-    } catch (error) {
-      console.error("Erro:", error);
-      alert(error.message);
+    if (!mealId) {
+      alert("Erro: ID da refeição não encontrado!");
+      return;
     }
+
+    // Primeiro, busca os dados da refeição antes de editar
+    fetch(`/api/meals/${mealId}`)
+      .then((response) => {
+        if (!response.ok) throw new Error("Erro ao buscar dados da refeição");
+        return response.json();
+      })
+      .then((currentMeal) => {
+        console.log("Dados da refeição:", currentMeal);
+
+        // Pede os novos valores ao usuário
+        const meal_type = prompt("Tipo de refeição:", currentMeal.meal_type);
+        const food_items = prompt(
+          "Itens alimentares (separados por vírgula):",
+          currentMeal.food_items
+        );
+        const calories = prompt("Calorias:", currentMeal.calories);
+        const date = prompt("Data (YYYY-MM-DD):", currentMeal.date);
+
+        if (!meal_type || !food_items || !calories || !date) {
+          alert("Todos os campos são obrigatórios!");
+          return;
+        }
+
+        const mealData = {
+          meal_type,
+          food_items,
+          calories: parseInt(calories),
+          date,
+        };
+
+        return fetch(`/api/meals/${mealId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(mealData),
+        });
+      })
+      .then((response) => {
+        if (!response.ok) throw new Error("Erro ao atualizar refeição");
+        alert("Refeição atualizada com sucesso!");
+        location.reload(); // Recarrega a página para mostrar os dados atualizados
+      })
+      .catch((error) => {
+        console.error("Erro ao editar refeição:", error);
+        alert(error.message);
+      });
   }
 
   addMealForm.addEventListener("submit", async function (e) {

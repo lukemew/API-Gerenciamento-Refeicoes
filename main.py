@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from database import get_db
 from fastapi.staticfiles import StaticFiles
 from models import Base, engine
+from fastapi.middleware.cors import CORSMiddleware
+
 
 app = FastAPI()
 
@@ -28,6 +30,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 app.include_router(views.router, tags=["Views"])
 app.include_router(activities.router, prefix="/api/activities", tags=["Activities"])

@@ -63,32 +63,29 @@ def create_meal(meal_data: MealCreate, db: Session = Depends(get_db)):
         )
 
 
-@router.put("/{meal_id}", summary="Atualiza uma refeição")
-def update_meal(
-    meal_id: int,
-    meal_data: MealUpdate,
-    db: Session = Depends(get_db)
-):
-    try:
-        meal = db.query(Meal).filter(Meal.id == meal_id).first()
-        if not meal:
-            raise HTTPException(status_code=404, detail="Refeição não encontrada")
+@router.put("/{meal_id}", summary="Atualiza uma refeição pelo ID")
+def update_meal(meal_id: int, meal_data: MealUpdate, db: Session = Depends(get_db)):
+    meal = db.query(Meal).filter(Meal.id == meal_id).first()
+    if not meal:
+        raise HTTPException(status_code=404, detail="Meal not found")
 
-        update_data = meal_data.dict(exclude_unset=True)
+    try:
         
-        if 'food_items' in update_data:
-            update_data['food_items'] = ",".join(update_data['food_items'])
-            
-        for field, value in update_data.items():
-            setattr(meal, field, value)
+        for key, value in meal_data.dict(exclude_unset=True).items():
+            if key == "food_items" and value is not None:
+                value = ",".join(value)  
+            setattr(meal, key, value)
 
         db.commit()
         db.refresh(meal)
-        return meal
+        return {"message": "Meal updated successfully", "data": meal}
 
-    except SQLAlchemyError as e:
+    except Exception as e:
         db.rollback()
-        raise HTTPException(status_code=500, detail=f"Erro no banco de dados: {str(e)}")
+        print(f"Update Error: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update meal")
+
+
 
 @router.delete("/{meal_id}", summary="Remove uma refeição")
 def delete_meal(

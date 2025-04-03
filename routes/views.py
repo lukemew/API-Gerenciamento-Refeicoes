@@ -42,6 +42,13 @@ def get_meals(user_id: int, db: Session = Depends(get_db)):
     meals = db.query(Meal).filter(Meal.user_id == user_id).all()
     return meals
 
+@router.get("/api/meals/{meal_id}", summary="Obtém uma refeição específica")
+def get_meal(meal_id: int, db: Session = Depends(get_db)):
+    meal = db.query(Meal).filter(Meal.id == meal_id).first()
+    if not meal:
+        raise HTTPException(status_code=404, detail="Refeição não encontrada")
+    return meal
+
 
 @router.post("/add-user", summary="Adiciona um novo usuário")
 def add_user(
