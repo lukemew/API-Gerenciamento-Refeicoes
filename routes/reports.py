@@ -1,7 +1,16 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from models import Meal, User
+from models import Meal, User, ActivityLog
+from database import get_db
+from sqlalchemy.sql import func
+
+router = APIRouter()
+
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import SQLAlchemyError
+from models import Meal, User, ActivityLog
 from database import get_db
 from sqlalchemy.sql import func
 
@@ -14,14 +23,24 @@ def get_user_calories(user_id: int, db: Session = Depends(get_db)):
         if not user:
             raise HTTPException(status_code=404, detail="Usuário não encontrado")
 
-        meals = db.query(Meal).filter(Meal.user_id == user_id).all()
-        total_calories = sum(meal.calories for meal in meals)
+        total_calories_consumed = db.query(func.coalesce(func.sum(Meal.calories), 0)).filter(Meal.user_id == user_id).scalar()
+        total_calories_burned = db.query(func.coalesce(func.sum(ActivityLog.calories_burned), 0)).filter(ActivityLog.user_id == user_id).scalar()
+
+        # 🛠 Convertendo para float para evitar erro de tipo
+        total_calories_consumed = float(total_calories_consumed)
+        total_calories_burned = float(total_calories_burned)
+
+        balance = total_calories_consumed - total_calories_burned
 
         return {
             "user_id": user_id,
             "name": user.name,
-            "total_calories": total_calories,
-            "message": f"{user.name} consumiu um total de {total_calories} calorias."
+            "total_calories_consumed": total_calories_consumed,
+            "total_calories_burned": total_calories_burned,
+            "balance": balance,
+            "message": f"{user.name} consumiu {total_calories_consumed} calorias e gastou {total_calories_burned} calorias. Balanço final: {balance} calorias."
         }
+
     except SQLAlchemyError as e:
+        print(f"Erro no banco de dados: {str(e)}")  # Log do erro real
         raise HTTPException(status_code=500, detail=f"Erro no banco de dados: {str(e)}")

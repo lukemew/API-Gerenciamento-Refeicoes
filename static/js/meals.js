@@ -8,9 +8,8 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch("/api/users")
       .then((response) => response.json())
       .then((data) => {
-        const users = data.data;
         userSelect.innerHTML = '<option value="">Escolha um usuário</option>';
-        users.forEach((user) => {
+        data.data.forEach((user) => {
           const option = document.createElement("option");
           option.value = user.id;
           option.textContent = `${user.name} (ID: ${user.id})`;
@@ -25,29 +24,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
   async function loadMeals(userId) {
     try {
-      const response = await fetch(`${API_BASE_URL}?user_id=${userId}`);
+      const response = await fetch(`${API_BASE_URL}/?user_id=${userId}`);
+
       if (!response.ok) throw new Error(await response.text());
 
-      const meals = await response.json(); // Recebe a lista direta
-      mealsList.innerHTML = "";
+      const meals = await response.json();
+      mealsList.innerHTML = meals.length
+        ? meals
+            .map(
+              (meal) => `
+          <li>
+            <strong>${meal.meal_type}</strong> - ${meal.calories} kcal (${meal.date})
+            <br>Itens: ${meal.food_items}
+            <button class="edit-meal" data-id="${meal.id}">✏️</button>
+            <button class="delete-meal" data-id="${meal.id}">🗑</button>
+          </li>`
+            )
+            .join("")
+        : "<li>Nenhuma refeição encontrada.</li>";
 
-      if (meals.length === 0) {
-        mealsList.innerHTML = "<li>Nenhuma refeição encontrada.</li>";
-        return;
-      }
-
-      meals.forEach((meal) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-          <strong>${meal.meal_type}</strong> - ${meal.calories} kcal (${meal.date})
-          <br>Itens: ${meal.food_items}
-          <button class="edit-meal" data-id="${meal.id}">✏️</button>
-          <button class="delete-meal" data-id="${meal.id}">🗑</button>
-        `;
-        mealsList.appendChild(li);
-      });
-
-      // Adiciona eventos (igual ao activities)
       document.querySelectorAll(".edit-meal").forEach((btn) => {
         btn.addEventListener("click", () => editMeal(btn.dataset.id, userId));
       });
@@ -61,7 +56,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Deleta refeição
   async function deleteMeal(mealId, userId) {
     if (!confirm("Tem certeza que deseja excluir esta refeição?")) return;
 
@@ -69,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function () {
       const response = await fetch(`${API_BASE_URL}/${mealId}`, {
         method: "DELETE",
       });
-
       if (!response.ok) throw new Error((await response.json()).detail);
 
       await loadMeals(userId);
@@ -80,26 +73,20 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  // Edita refeição
   async function editMeal(mealId, userId) {
     try {
       const response = await fetch(`${API_BASE_URL}/${mealId}`);
       if (!response.ok) throw new Error((await response.json()).detail);
-
       const meal = await response.json();
 
-      const mealType = prompt("Tipo de refeição:", meal.meal_type);
-      const foodItems = prompt(
-        "Itens (separados por vírgula):",
-        meal.food_items
-      );
-      const calories = prompt("Calorias:", meal.calories);
-      const date = prompt("Data (YYYY-MM-DD):", meal.date);
-
-      if (!mealType || !foodItems || !calories || !date) {
-        alert("Todos os campos são obrigatórios!");
-        return;
-      }
+      const mealType =
+        prompt("Tipo de refeição:", meal.meal_type) || meal.meal_type;
+      const foodItems =
+        prompt("Itens (separados por vírgula):", meal.food_items) ||
+        meal.food_items;
+      const calories =
+        parseInt(prompt("Calorias:", meal.calories)) || meal.calories;
+      const date = prompt("Data (YYYY-MM-DD):", meal.date) || meal.date;
 
       const updateResponse = await fetch(`${API_BASE_URL}/${mealId}`, {
         method: "PUT",
@@ -107,8 +94,8 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({
           meal_type: mealType,
           food_items: foodItems.split(",").map((i) => i.trim()),
-          calories: parseInt(calories),
-          date: date,
+          calories,
+          date,
         }),
       });
 
@@ -128,14 +115,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       const userId = userSelect.value;
+      if (!userId) throw new Error("Selecione um usuário!");
+
       const mealType = document.getElementById("meal-type").value;
       const foodItems = document.getElementById("food-items").value;
       const calories = document.getElementById("calories").value;
       const date = document.getElementById("date").value;
 
-      if (!userId || !mealType || !foodItems || !calories || !date) {
+      if (!mealType || !foodItems || !calories || !date)
         throw new Error("Todos os campos são obrigatórios!");
-      }
 
       const response = await fetch(API_BASE_URL, {
         method: "POST",
@@ -145,14 +133,14 @@ document.addEventListener("DOMContentLoaded", function () {
           meal_type: mealType,
           food_items: foodItems.split(",").map((item) => item.trim()),
           calories: parseInt(calories),
-          date: date,
+          date,
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.detail || "Erro ao adicionar refeição");
-      }
+      if (!response.ok)
+        throw new Error(
+          (await response.json()).detail || "Erro ao adicionar refeição"
+        );
 
       addMealForm.reset();
       loadMeals(userId);
@@ -164,8 +152,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   userSelect.addEventListener("change", function () {
-    if (this.value) loadMeals(this.value);
-    else mealsList.innerHTML = "";
+    this.value ? loadMeals(this.value) : (mealsList.innerHTML = "");
   });
 
   loadUsers();

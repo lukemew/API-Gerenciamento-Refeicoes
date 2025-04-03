@@ -104,3 +104,52 @@
   flex-direction: column;
   gap: 1rem;
 }
+
+/* Estilos gerais para formulários */
+#login-form,
+#register-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+/* Estilos para inputs */
+#login-form input,
+#register-form input {
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+#login-form input::placeholder,
+#register-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+/* Estilos para links */
+.link {
+  color: lightblue;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.link:hover {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Ajustes para o container */
+.glass-container {
+  margin: 2rem auto;
+}
+
+/* Ajustes para parágrafos */
+.glass-container p {
+  color: white;
+  margin-top: 1rem;
+  margin-bottom: 0;
+}

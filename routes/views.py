@@ -38,9 +38,10 @@ def list_users(db: Session = Depends(get_db)):
         raise HTTPException(status_code=500, detail="Erro ao listar usuários")
 
 @router.get("/api/meals/")
-def get_meals(db: Session = Depends(get_db)):
-    meals = db.query(Meal).all()
+def get_meals(user_id: int, db: Session = Depends(get_db)):
+    meals = db.query(Meal).filter(Meal.user_id == user_id).all()
     return meals
+
 
 @router.post("/add-user", summary="Adiciona um novo usuário")
 def add_user(
