@@ -2,14 +2,16 @@ from fastapi import APIRouter, Request, Depends, Form, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
-from database import get_db
-from models import User, Meal
+from database.database import get_db
+from app.models.models import User, Meal
+from app.schemas.schemas import AuthUser
 from fastapi.templating import Jinja2Templates
+from database.auth_user import UserUseCases
+from database.token import verify_token
 
 templates = Jinja2Templates(directory="templates")
 
-router = APIRouter()
-
+router = APIRouter()  # 🔒 Todas as rotas exigem token
 
 @router.get("/", summary="Página inicial")
 def get_index(request: Request):
@@ -69,7 +71,7 @@ def add_user(
         raise HTTPException(status_code=500, detail="Erro ao adicionar usuário")
 
 
-from models import Meal  # Certifique-se de importar o modelo Meal
+from app.models.models import Meal  # Certifique-se de importar o modelo Meal
 
 @router.get("/reports", summary="Página de relatórios")
 def reports_page(request: Request):
@@ -104,3 +106,4 @@ def add_meal(
         db.rollback()
         print(f"Erro ao adicionar refeição: {e}")
         raise HTTPException(status_code=500, detail="Erro ao adicionar refeição")
+

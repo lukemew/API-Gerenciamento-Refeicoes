@@ -15,14 +15,14 @@
   <body>
     <div class="glass-container">
       <h1>Login 🔑</h1>
-      <form id="login-form">
-        <input type="text" name="username" placeholder="Usuário" required />
+      <form id="login-form" method="post" action="/login">
+        <input type="text" name="username" placeholder="Nome" required />
         <input type="password" name="password" placeholder="Senha" required />
         <button type="submit" class="button">Entrar</button>
       </form>
       <p>
         Ainda não tem uma conta?
-        <a href="/cadastro" class="link">Cadastre-se</a>
+        <a href="/register" class="link">Cadastre-se</a>
       </p>
     </div>
   </body>

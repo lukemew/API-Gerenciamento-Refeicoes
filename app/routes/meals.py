@@ -1,13 +1,14 @@
 from fastapi import APIRouter, HTTPException, Depends, Query
 from sqlalchemy.orm import Session
-from models import Meal, User
-from database import get_db
+from app.models.models import Meal, User
+from database.database import get_db
 from pydantic import BaseModel
 from typing import List, Optional
 import datetime
 from sqlalchemy.exc import SQLAlchemyError
+from database.token import verify_token
 
-router = APIRouter()
+router = APIRouter()  # 🔒 Todas as rotas exigem token
 
 class MealCreate(BaseModel):
     user_id: int

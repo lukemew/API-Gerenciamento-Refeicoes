@@ -45,3 +45,24 @@
 .button:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+/* Estilo para o botão de logout */
+.logout-container {
+  margin-top: 3rem;
+  position: absolute;
+  top: -25px;
+  right: 20px;
+}
+
+.logout-button {
+  background-color: #00000062;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: background-color 0.3s;
+}
+
+.logout-button:hover {
+  background-color: #d1001f9c;
+}

@@ -15,12 +15,23 @@
   <body>
     <div class="glass-container">
       <h1>Cadastro 📝</h1>
-      <form id="register-form">
+      <form id="register-form" method="post" action="/register">
         <input type="text" name="name" placeholder="Nome" required />
-        <input type="email" name="email" placeholder="E-mail" required />
+
+        <input type="number" name="age" placeholder="Idade" />
+        <!-- ⬅️ Não required -->
+
+        <select name="gender">
+          <option value="">Gênero</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Feminino">Feminino</option>
+          <option value="Outro">Outro</option>
+        </select>
+
         <input type="password" name="password" placeholder="Senha" required />
-        <button type="submit" class="button">Cadastrar</button>
+        <button type="submit">Cadastrar</button>
       </form>
+
       <p>
         Já tem uma conta?
         <a href="/login" class="link">Faça login</a>

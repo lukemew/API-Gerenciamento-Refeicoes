@@ -1,20 +1,13 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from models import Meal, User, ActivityLog
-from database import get_db
+from app.models.models import Meal, User, ActivityLog
+from database.database import get_db
 from sqlalchemy.sql import func
+from database.token import verify_token
 
-router = APIRouter()
+router = APIRouter()  # 🔒 Todas as rotas exigem token
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError
-from models import Meal, User, ActivityLog
-from database import get_db
-from sqlalchemy.sql import func
-
-router = APIRouter()
 
 @router.get("/user/{user_id}/calories", summary="Resumo de calorias por usuário")
 def get_user_calories(user_id: int, db: Session = Depends(get_db)):

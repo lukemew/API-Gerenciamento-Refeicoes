@@ -1,12 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from models import User
-from database import get_db
+from app.models.models import User
+from database.database import get_db
 from pydantic import BaseModel
 from typing import Optional
+from database.token import verify_token
 
-router = APIRouter()
+router = APIRouter()  # 🔒 Todas as rotas exigem token
 
 
 class UserCreate(BaseModel):

@@ -1,16 +1,18 @@
 from fastapi import APIRouter, HTTPException, Depends, Query, Request
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from database import get_db
-from models import ActivityLog, User
+from database.database import get_db
+from app.models.models import ActivityLog, User
 from pydantic import BaseModel
 from typing import List, Optional
 from datetime import datetime
 from fastapi.templating import Jinja2Templates
+from database.token import verify_token
 
 templates = Jinja2Templates(directory="templates")
 
-router = APIRouter()
+router = APIRouter()  # 🔒 Todas as rotas exigem token
+
 
 # Definição das calorias queimadas por atividade e intensidade
 CALORIES_PER_MINUTE = {

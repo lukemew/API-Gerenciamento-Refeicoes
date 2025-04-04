@@ -24,6 +24,8 @@ services:
       - db
     environment:
       DATABASE_URL: mysql+pymysql://user:password@db:3306/fastapi_db
+    env_file:
+      - .env
     volumes:
       - ./static:/app/static # Monta o diretório static
       - ./templates:/app/templates

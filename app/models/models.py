@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, Date, ForeignKey
 from sqlalchemy.orm import relationship
 from datetime import datetime
-from database import Base, engine
+from database.database import Base, engine
 
 class User(Base):
     __tablename__ = "users"
@@ -10,6 +10,7 @@ class User(Base):
     name = Column(String(255), nullable=False)
     age = Column(Integer, nullable=False)
     gender = Column(String(50), nullable=False)
+    password = Column(String(255))
     
     # Relacionamento corrigido
     meals = relationship("Meal", back_populates="user", cascade="all, delete-orphan")

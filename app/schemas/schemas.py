@@ -20,11 +20,16 @@ class MealResponse(MealBase):
 
 class UserBase(BaseModel):
     name: str
-    age: int
-    gender: str
+    age: Optional[int] = None   # ← Agora é opcional
+    gender: Optional[str] = None
+    password: Optional[str] = None
 
 class UserCreate(UserBase):
     pass
+
+class AuthUser(BaseModel):
+    username: str
+    password: str
 
 class UserResponse(UserBase):
     id: int
