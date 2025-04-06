@@ -117,6 +117,32 @@
   margin-bottom: 1.5rem;
 }
 
+.list_glass-container {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(163, 0, 0, 0.8);
+  padding: 3rem;
+  max-width: 300px;
+  min-height: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Título */
+.list_glass-container h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+/* Parágrafo */
+.list_glass-container p {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+}
+
 /* Estilo para o dropdown de usuário */
 #user-select {
   width: 100%;
@@ -143,4 +169,14 @@
 
 .activity-alta {
   border-left: 4px solid #f44336; /* Vermelho */
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+li strong {
+  margin-right: 8px;
 }

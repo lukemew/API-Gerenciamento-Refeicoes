@@ -40,7 +40,7 @@ async function loadUsers() {
 
       // Criando Botão de Editar
       const editButton = document.createElement("button");
-      editButton.textContent = "Editar";
+      editButton.textContent = "✏️";
       editButton.classList.add("edit-user");
       editButton.dataset.id = user.id;
       editButton.dataset.name = user.name;
@@ -52,7 +52,7 @@ async function loadUsers() {
 
       // Criando Botão de Remover
       const deleteButton = document.createElement("button");
-      deleteButton.textContent = "Remover";
+      deleteButton.textContent = "🗑";
       deleteButton.classList.add("delete-user");
       deleteButton.dataset.id = user.id;
       deleteButton.addEventListener("click", function () {

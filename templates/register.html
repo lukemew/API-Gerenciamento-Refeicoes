@@ -4,10 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cadastro</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', path='css/styles.css') }}"
-    />
+
     <link rel="stylesheet" href="../static/css/styles.css" />
     <link rel="stylesheet" href="../static/css/index.css" />
     <link rel="stylesheet" href="../static/css/meals.css" />
@@ -18,18 +15,19 @@
       <form id="register-form" method="post" action="/register">
         <input type="text" name="name" placeholder="Nome" required />
 
+        <input type="password" name="password" placeholder="Senha" required />
+
         <input type="number" name="age" placeholder="Idade" />
         <!-- ⬅️ Não required -->
 
-        <select name="gender">
+        <select id="user-select" name="gender">
           <option value="">Gênero</option>
           <option value="Masculino">Masculino</option>
           <option value="Feminino">Feminino</option>
           <option value="Outro">Outro</option>
         </select>
 
-        <input type="password" name="password" placeholder="Senha" required />
-        <button type="submit">Cadastrar</button>
+        <button type="submit" class="button">Cadastrar</button>
       </form>
 
       <p>

@@ -41,8 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
         li.innerHTML = `
           <strong>${activity.activity}</strong> (${activity.intensity}) - 
           ${activity.duration} min, ${Math.round(activity.calories_burned)} kcal
+          <div class="button-container">
           <button class="edit-activity" data-id="${activity.id}">✏️</button>
           <button class="delete-activity" data-id="${activity.id}">🗑</button>
+          </div>
         `;
         activitiesList.appendChild(li);
       });

@@ -35,8 +35,12 @@ app.add_middleware(
 async def auth_middleware(request: Request, call_next):
     # Rotas públicas que não requerem autenticação
     public_routes = {
-        "/login", "/register"
+        "/login", "/register", "/static" "/logout",
+        "/favicon.ico"
     }
+
+    if request.url.path.startswith("/static"):
+        return await call_next(request)
 
     print(f"Path acessado: {request.url.path}")
     
@@ -66,6 +70,11 @@ async def auth_middleware(request: Request, call_next):
     @app.get('/favicon.ico', include_in_schema=False)
     async def favicon():
         return FileResponse("static/favicon.ico")
+    
+    @app.get("/test-css")
+    async def test_css():
+        """Teste se os arquivos estáticos estão sendo servidos corretamente"""
+        return FileResponse("static/css/styles.css")
 
 # 🔌 Registra os roteadores
 app.include_router(auth.router, tags=["Auth"])

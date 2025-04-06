@@ -23,6 +23,32 @@
   margin-bottom: 2rem;
 }
 
+.list_glass-container {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  border: 1px solid rgba(163, 0, 0, 0.8);
+  padding: 3rem;
+  max-width: 250px;
+  min-height: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+/* Título */
+.list_glass-container h1 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+/* Parágrafo */
+.list_glass-container p {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2rem;
+}
+
 /* Container dos botões */
 .button-container {
   display: flex;
@@ -65,4 +91,18 @@
 
 .logout-button:hover {
   background-color: #d1001f9c;
+}
+
+#user-select {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+#user-select option {
+  background: rgba(0, 0, 0, 0.9);
 }

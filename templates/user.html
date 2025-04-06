@@ -19,11 +19,22 @@
       <form id="add-user-form">
         <input type="text" id="name" placeholder="Nome" required />
         <input type="number" id="age" placeholder="Idade" required />
-        <input type="text" id="gender" placeholder="Gênero" required />
+        <select class="user-select" id="gender" name="gender">
+          <option value="">Gênero</option>
+          <option value="Masculino">Masculino</option>
+          <option value="Feminino">Feminino</option>
+          <option value="Outro">Outro</option>
+        </select>
         <button type="submit">Adicionar Usuário</button>
       </form>
 
       <!-- Lista de usuários -->
+
+      <!-- Botão para voltar à página inicial -->
+      <a href="/" class="button">Voltar à Página Inicial</a>
+    </div>
+
+    <div class="list_glass-container">
       <div id="user-list">
         <h2>Lista de Usuários</h2>
         <ul id="users">
@@ -44,9 +55,6 @@
           {% endfor %}
         </ul>
       </div>
-
-      <!-- Botão para voltar à página inicial -->
-      <a href="/" class="button">Voltar à Página Inicial</a>
     </div>
 
     <!-- Script JavaScript -->

@@ -10,10 +10,6 @@
     />
     <link
       rel="stylesheet"
-      href="{{ url_for('static', path='css/index.css') }}"
-    />
-    <link
-      rel="stylesheet"
       href="{{ url_for('static', path='css/activities.css') }}"
     />
     <link rel="stylesheet" href="../static/css/styles.css" />
@@ -62,14 +58,14 @@
         <button type="submit">Adicionar Atividade</button>
       </form>
 
-      <!-- Lista de atividades -->
+      <!-- Botão para voltar à página inicial -->
+      <a href="/" class="button">Voltar à Página Inicial</a>
+    </div>
+    <div class="list_glass-container">
       <div id="activity-list">
         <h2>Lista de Atividades</h2>
         <ul id="activities"></ul>
       </div>
-
-      <!-- Botão para voltar à página inicial -->
-      <a href="/" class="button">Voltar à Página Inicial</a>
     </div>
 
     <!-- Script JavaScript -->

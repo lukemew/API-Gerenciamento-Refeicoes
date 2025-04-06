@@ -142,14 +142,23 @@
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Ajustes para o container */
-.glass-container {
-  margin: 2rem auto;
+.button-container {
+  margin-top: 8px;
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
 }
 
-/* Ajustes para parágrafos */
-.glass-container p {
+li strong {
+  margin-right: 8px;
+}
+
+.button-container button {
+  margin-left: 10px;
+  padding: 0.3rem 0.6rem;
+  border-radius: 5px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
   color: white;
-  margin-top: 1rem;
-  margin-bottom: 0;
+  cursor: pointer;
 }

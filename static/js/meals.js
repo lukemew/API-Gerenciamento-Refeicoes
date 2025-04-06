@@ -36,8 +36,10 @@ document.addEventListener("DOMContentLoaded", function () {
           <li>
             <strong>${meal.meal_type}</strong> - ${meal.calories} kcal (${meal.date})
             <br>Itens: ${meal.food_items}
+            <div class="button-container">
             <button class="edit-meal" data-id="${meal.id}">✏️</button>
             <button class="delete-meal" data-id="${meal.id}">🗑</button>
+            </div>
           </li>`
             )
             .join("")
